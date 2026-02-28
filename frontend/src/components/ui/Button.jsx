@@ -27,13 +27,13 @@ export default function Button({
 
     const variants = {
         primary:
-            'bg-[#000501] text-[#ade1e5] shadow-lg shadow-black/20 hover:bg-[#0f1f14] hover:shadow-xl hover:shadow-black/30 focus-visible:ring-[#79c7c5] dark:bg-[#99d19c] dark:text-[#000501] dark:hover:bg-[#7dc47f] dark:shadow-[#99d19c]/20',
+            'bg-brand-dark text-brand-frost shadow-lg shadow-black/20 hover:bg-brand-dark/90 hover:shadow-xl focus-visible:ring-brand-teal dark:bg-brand-green dark:text-brand-dark dark:hover:bg-brand-green/90 dark:shadow-brand-green/20',
         secondary:
-            'bg-[#79c7c5] text-[#000501] shadow-md shadow-[#79c7c5]/25 hover:bg-[#60b5b3] hover:shadow-lg focus-visible:ring-[#79c7c5]',
+            'bg-brand-aqua text-brand-dark shadow-md shadow-brand-aqua/20 hover:bg-brand-aqua/90 hover:shadow-lg focus-visible:ring-brand-aqua',
         outline:
-            'border-2 border-[#73ab84] text-[#000501] bg-transparent hover:bg-[#73ab84]/10 focus-visible:ring-[#73ab84] dark:border-[#79c7c5] dark:text-[#ade1e5] dark:hover:bg-[#79c7c5]/10',
+            'border-2 border-brand-teal/30 text-brand-dark bg-transparent hover:bg-brand-teal/5 focus-visible:ring-brand-teal dark:border-brand-aqua/30 dark:text-brand-frost dark:hover:bg-brand-aqua/5',
         ghost:
-            'text-[#73ab84] bg-transparent hover:bg-[#73ab84]/10 focus-visible:ring-[#73ab84] dark:text-[#ade1e5] dark:hover:bg-[#ade1e5]/10',
+            'text-brand-teal bg-transparent hover:bg-brand-teal/5 focus-visible:ring-brand-teal dark:text-brand-aqua dark:hover:bg-brand-aqua/5',
     };
 
     return (

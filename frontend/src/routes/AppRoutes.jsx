@@ -13,13 +13,13 @@ const BARE_ROUTES = ['/login'];
 
 function AppLayout({ children, pathname }) {
     const isBare = BARE_ROUTES.includes(pathname);
-    if (isBare) return <>{children}</>;
+    if (isBare) return <div className="min-h-screen">{children}</div>;
     return (
-        <>
+        <div className="flex flex-col min-h-screen">
             <Navbar />
-            <main>{children}</main>
+            <main className="flex-grow pt-20">{children}</main>
             <Footer />
-        </>
+        </div>
     );
 }
 

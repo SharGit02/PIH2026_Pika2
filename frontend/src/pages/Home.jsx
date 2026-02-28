@@ -51,7 +51,7 @@ export default function Home() {
         <div className="min-h-screen">
 
             {/* HERO */}
-            <section className="hero-bg min-h-screen flex flex-col items-center justify-center text-center pt-20 pb-16 px-4 relative overflow-hidden">
+            <section className="hero-bg flex flex-col items-center justify-center text-center pt-32 pb-24 px-4 relative overflow-hidden">
                 {/* Decorative blobs */}
                 <div className="absolute top-1/4 left-1/4 w-72 h-72 rounded-full opacity-30 blur-3xl pointer-events-none"
                     style={{ background: 'radial-gradient(circle, #79c7c5, transparent)' }} />
@@ -69,7 +69,7 @@ export default function Home() {
                     <h1 className="text-5xl sm:text-6xl md:text-7xl font-black tracking-tight leading-[1.08] mb-6 animate-fade-up delay-100">
                         <span className="text-gradient">Borrow anything.</span>
                         <br />
-                        <span className="text-[#000501] dark:text-[#ade1e5]">From anyone near you.</span>
+                        <span className="text-brand-dark dark:text-white">From anyone near you.</span>
                     </h1>
 
                     <p className="text-lg sm:text-xl text-[#3d6b50] dark:text-[#79c7c5] max-w-2xl mx-auto leading-relaxed mb-10 font-medium animate-fade-up delay-200">
@@ -156,7 +156,7 @@ export default function Home() {
             </section>
 
             {/* FEATURED ITEMS */}
-            <section className="py-8 pb-24">
+            <section className="py-24 pt-0">
                 <Container>
                     <div className="flex items-end justify-between mb-10">
                         <div>

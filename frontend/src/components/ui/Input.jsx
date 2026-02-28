@@ -35,17 +35,17 @@ export default function Input({
                 <input
                     id={inputId}
                     className={`
-            w-full rounded-xl border px-4 py-3 text-sm font-medium
-            bg-white/70 dark:bg-[#000501]/60
-            text-[#000501] dark:text-[#ade1e5]
-            placeholder:text-[#73ab84]/60 dark:placeholder:text-[#79c7c5]/40
-            border-[#99d19c]/60 dark:border-[#79c7c5]/25
-            backdrop-blur-sm
-            transition-all duration-200
-            focus:outline-none focus:ring-2 focus:ring-[#79c7c5]/60 focus:border-[#79c7c5]
-            dark:focus:ring-[#79c7c5]/40 dark:focus:border-[#79c7c5]/60
+            w-full rounded-xl border px-4 py-3 text-sm font-bold
+            bg-white/50 dark:bg-brand-dark/50
+            text-brand-dark dark:text-brand-frost
+            placeholder:text-brand-teal/40 dark:placeholder:text-brand-aqua/30
+            border-brand-teal/20 dark:border-brand-aqua/10
+            backdrop-blur-md
+            transition-all duration-300
+            focus:outline-none focus:ring-2 focus:ring-brand-teal/30 focus:border-brand-teal/50
+            dark:focus:ring-brand-aqua/20 dark:focus:border-brand-aqua/40
             ${error ? 'border-red-400 focus:ring-red-300' : ''}
-            ${Icon ? 'pl-10' : ''}
+            ${Icon ? 'pl-11' : ''}
             ${className}
           `}
                     {...props}

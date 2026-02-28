@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
-    MapPin, Star, IndianRupee, Calendar, User, ArrowLeft, CheckCircle2, XCircle,
+    MapPin, Star, IndianRupee, Calendar, User, ArrowLeft, CheckCircle2, XCircle, ImageOff,
 } from 'lucide-react';
 import { fetchItemById } from '../api/services.js';
 import { useRental } from '../context/RentalContext.jsx';
@@ -45,6 +45,7 @@ export default function ItemDetails() {
     const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
     const [startDate, setStartDate] = useState(today);
     const [endDate, setEndDate] = useState(tomorrow);
+    const [imgError, setImgError] = useState(false);
 
     useEffect(() => {
         fetchItemById(id)
@@ -54,7 +55,7 @@ export default function ItemDetails() {
 
     if (loading) return <DetailSkeleton />;
     if (error || !item) return (
-        <div className="pt-32">
+        <div className="pt-28">
             <ErrorState message={error} onRetry={() => navigate('/browse')} />
         </div>
     );
@@ -75,27 +76,39 @@ export default function ItemDetails() {
     };
 
     return (
-        <div className="pt-24 pb-20 min-h-screen">
+        <div className="pb-24 animate-fade-in">
             <Container>
                 {/* Back */}
-                <button
-                    onClick={() => navigate(-1)}
-                    className="flex items-center gap-2 text-sm font-semibold text-[#73ab84] dark:text-[#79c7c5] hover:text-[#000501] dark:hover:text-[#ade1e5] mb-8 transition-colors group"
-                >
-                    <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-                    Back to results
-                </button>
+                <div className="mb-10 animate-fade-up">
+                    <button
+                        onClick={() => navigate(-1)}
+                        className="flex items-center gap-2.5 text-sm font-black uppercase tracking-widest text-brand-teal dark:text-brand-aqua hover:text-brand-dark dark:hover:text-brand-frost transition-all duration-300 group"
+                    >
+                        <div className="w-9 h-9 rounded-xl bg-brand-teal/10 dark:bg-brand-aqua/10 flex items-center justify-center group-hover:bg-brand-teal/20 transition-colors">
+                            <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+                        </div>
+                        Back to results
+                    </button>
+                </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 xl:gap-16">
 
                     {/* Image */}
                     <div className="relative">
-                        <div className="aspect-[4/3] rounded-3xl overflow-hidden glass-card shadow-2xl">
-                            <img
-                                src={item.image}
-                                alt={item.title}
-                                className="w-full h-full object-cover"
-                            />
+                        <div className="aspect-[4/3] rounded-3xl overflow-hidden glass-card shadow-2xl bg-gradient-to-br from-[#99d19c]/30 to-[#79c7c5]/20 dark:from-[#99d19c]/10 dark:to-[#79c7c5]/8">
+                            {imgError ? (
+                                <div className="w-full h-full flex flex-col items-center justify-center gap-3 text-[#73ab84] dark:text-[#79c7c5]">
+                                    <ImageOff size={48} className="opacity-30" />
+                                    <span className="text-sm font-semibold opacity-50">{item.category}</span>
+                                </div>
+                            ) : (
+                                <img
+                                    src={item.image}
+                                    alt={item.title}
+                                    className="w-full h-full object-cover"
+                                    onError={() => setImgError(true)}
+                                />
+                            )}
                         </div>
                         {/* Floating badge */}
                         <div className="absolute top-4 left-4">
