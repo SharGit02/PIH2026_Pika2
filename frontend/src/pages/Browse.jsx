@@ -1,25 +1,45 @@
 import React, { useState, useEffect, useCallback } from 'react';
+<<<<<<< HEAD
 import { useSearchParams } from 'react-router-dom';
 import { Search, SlidersHorizontal, X, ChevronDown } from 'lucide-react';
 import api from '../api/axios.js';
+=======
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import {
+    Search, SlidersHorizontal, X, ChevronDown, MapPin, Star, ShieldCheck,
+    ArrowUpDown, Filter, Map as MapIcon, Grid, LayoutGrid, List, Sliders, Settings2, ChevronRight
+} from 'lucide-react';
+import { fetchItems } from '../api/services.js';
+>>>>>>> SharvariFrontend
 import { CATEGORIES } from '../api/placeholder.js';
 import ItemCard from '../components/items/ItemCard.jsx';
 import { LoadingGrid, EmptyState, ErrorState } from '../components/items/ItemStates.jsx';
 import Container from '../components/layout/Container.jsx';
 import Button from '../components/ui/Button.jsx';
+import Badge from '../components/ui/Badge.jsx';
 
 export default function Browse() {
     const [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
 
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+<<<<<<< HEAD
     const [filtersOpen, setFiltersOpen] = useState(false);
     const [userCoords, setUserCoords] = useState(null); // { lat, lng }
+=======
+    const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
+>>>>>>> SharvariFrontend
 
+    // Filter States
     const [search, setSearch] = useState(searchParams.get('search') || '');
     const [category, setCategory] = useState(searchParams.get('category') || 'All');
     const [maxPrice, setMaxPrice] = useState(searchParams.get('maxPrice') || '');
+    const [maxDistance, setMaxDistance] = useState(searchParams.get('distance') || 25);
+    const [minRating, setMinRating] = useState(0);
+    const [verifiedOnly, setVerifiedOnly] = useState(false);
+    const [sortBy, setSortBy] = useState('nearest');
 
     // Auto-detect user location once
     useEffect(() => {
@@ -39,6 +59,7 @@ export default function Browse() {
         setLoading(true);
         setError(null);
         try {
+<<<<<<< HEAD
             const params = {};
             if (search) params.search = search;
             if (category !== 'All') params.category = category;
@@ -52,12 +73,40 @@ export default function Browse() {
             setItems(items);
         } catch {
             console.error('❌ [Browse] Failed to fetch products');
+=======
+            const filters = {
+                search,
+                category: category !== 'All' ? category : undefined,
+                maxPrice: maxPrice ? Number(maxPrice) : undefined,
+                distance: maxDistance,
+            };
+
+            const data = await fetchItems(filters);
+            let results = data.items || data;
+
+            // Client-side simulated filters
+            if (minRating > 0) results = results.filter(i => i.rating >= minRating);
+            if (verifiedOnly) results = results.filter(i => i.verified !== false);
+
+            // Sorting
+            if (sortBy === 'price_low') results.sort((a, b) => a.pricePerDay - b.pricePerDay);
+            if (sortBy === 'rating_high') results.sort((a, b) => b.rating - a.rating);
+            if (sortBy === 'nearest') results.sort((a, b) => a.distance - b.distance);
+
+            setItems(results);
+        } catch (e) {
+            console.error(e);
+>>>>>>> SharvariFrontend
             setError('Could not load items. Please try again.');
         } finally {
             setLoading(false);
         }
+<<<<<<< HEAD
     }, [search, category, maxPrice, userCoords]);
 
+=======
+    }, [search, category, maxPrice, maxDistance, minRating, verifiedOnly, sortBy]);
+>>>>>>> SharvariFrontend
 
     useEffect(() => {
         const handler = setTimeout(() => {
@@ -66,76 +115,225 @@ export default function Browse() {
             if (search) params.search = search;
             if (category !== 'All') params.category = category;
             if (maxPrice) params.maxPrice = maxPrice;
+            if (maxDistance !== 25) params.distance = maxDistance;
             setSearchParams(params, { replace: true });
         }, 350);
         return () => clearTimeout(handler);
-    }, [loadItems, search, category, maxPrice, setSearchParams]);
+    }, [loadItems, search, category, maxPrice, maxDistance, setSearchParams]);
 
     const clearFilters = () => {
         setSearch('');
         setCategory('All');
         setMaxPrice('');
+        setMaxDistance(25);
+        setMinRating(0);
+        setVerifiedOnly(false);
     };
 
-    const hasFilters = search || category !== 'All' || maxPrice;
+    const countActiveFilters = () => {
+        let count = 0;
+        if (category !== 'All') count++;
+        if (maxPrice) count++;
+        if (maxDistance !== 25) count++;
+        if (minRating > 0) count++;
+        if (verifiedOnly) count++;
+        return count;
+    };
 
     return (
-        <div className="pb-24 animate-fade-in">
+        <div className="pb-24 animate-fade-in relative min-h-screen bg-white/40 dark:bg-transparent">
+            {/* Background Accent */}
+            <div className="absolute top-0 right-0 w-96 h-96 bg-brand-green/5 blur-[120px] pointer-events-none rounded-full" />
+
             <Container>
-
-                {/* Header */}
-                <div className="mb-10 animate-fade-up">
-                    <h1 className="text-4xl font-black tracking-tight text-brand-dark dark:text-brand-frost mb-2">Browse Items</h1>
-                    <p className="text-brand-teal dark:text-brand-aqua/70 font-bold text-sm tracking-wide uppercase">
-                        {loading ? 'Searching...' : `${items.length} items found near you`}
-                    </p>
-                </div>
-
-                {/* Search + Filter Bar */}
-                <div className="glass rounded-2xl p-3 flex flex-col sm:flex-row gap-3 mb-6 shadow-md">
-                    <div className="flex-1 flex items-center gap-3 px-4">
-                        <Search size={17} className="text-[#73ab84] dark:text-[#79c7c5] shrink-0" />
-                        <input
-                            type="text"
-                            placeholder="Search items, categories..."
-                            value={search}
-                            onChange={e => setSearch(e.target.value)}
-                            className="w-full bg-transparent text-sm font-medium text-[#000501] dark:text-[#ade1e5] placeholder:text-[#73ab84]/55 dark:placeholder:text-[#79c7c5]/45 outline-none py-2"
-                        />
-                        {search && (
-                            <button onClick={() => setSearch('')} className="text-[#73ab84] hover:text-[#000501] dark:text-[#79c7c5] dark:hover:text-[#ade1e5]">
-                                <X size={16} />
-                            </button>
-                        )}
+                {/* Header Section */}
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-16 pt-10 animate-fade-up">
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-brand-teal/40">
+                            <MapPin size={14} className="text-brand-green" /> Local Neighborhood: Bandra, Mumbai
+                        </div>
+                        <h1 className="text-4xl sm:text-6xl font-black tracking-tighter text-brand-dark dark:text-brand-frost leading-none">
+                            Discover <span className="text-brand-green italic opacity-90">Gear.</span>
+                        </h1>
+                        <div className="flex items-center gap-3">
+                            <Badge variant="info" className="!bg-brand-dark !text-brand-frost dark:!bg-brand-green dark:!text-brand-dark px-4 py-1 text-[10px] font-black uppercase tracking-widest">
+                                {loading ? '...' : items.length} Neighbourhood Results
+                            </Badge>
+                        </div>
                     </div>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setFiltersOpen(p => !p)}
-                        className="sm:shrink-0"
-                    >
-                        <SlidersHorizontal size={15} />
-                        Filters
-                        {hasFilters && <span className="w-2 h-2 rounded-full bg-[#73ab84] dark:bg-[#99d19c]" />}
-                        <ChevronDown size={14} className={`transition-transform ${filtersOpen ? 'rotate-180' : ''}`} />
-                    </Button>
+
+                    {/* View Controls */}
+                    <div className="flex items-center gap-4">
+                        <div className="flex bg-brand-teal/5 p-1 rounded-2xl border border-brand-teal/5">
+                            <button className="flex items-center gap-2 px-6 py-3 rounded-xl bg-brand-dark text-brand-frost dark:bg-brand-green dark:text-brand-dark shadow-xl text-[10px] font-black uppercase tracking-widest">
+                                <LayoutGrid size={16} /> Grid
+                            </button>
+                            <button
+                                onClick={() => navigate('/map')}
+                                className="flex items-center gap-2 px-6 py-3 rounded-xl text-brand-teal/40 hover:text-brand-dark dark:hover:text-brand-frost text-[10px] font-black uppercase tracking-widest"
+                            >
+                                <MapIcon size={16} /> Map
+                            </button>
+                        </div>
+
+                        <div className="hidden lg:flex items-center gap-3 glass-card p-1 rounded-2xl border border-brand-teal/10">
+                            <Sliders size={16} className="ml-4 text-brand-teal/40" />
+                            <select
+                                value={sortBy}
+                                onChange={(e) => setSortBy(e.target.value)}
+                                className="bg-transparent text-[10px] font-black uppercase tracking-widest text-brand-dark dark:text-brand-frost outline-none cursor-pointer px-4 py-3 min-w-[160px]"
+                            >
+                                <option value="nearest">Distance: Nearest</option>
+                                <option value="price_low">Price: Low to High</option>
+                                <option value="rating_high">Rating: High to Low</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
-                {/* Expanded Filters */}
-                {filtersOpen && (
-                    <div className="glass-card rounded-2xl p-5 mb-8 animate-fade-up">
-                        <div className="flex flex-wrap gap-4 items-end">
+                <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-12 items-start">
+                    {/* Desktop Sidebar Filters */}
+                    <aside className="hidden lg:flex flex-col gap-10 sticky top-32">
+                        {/* Search Input */}
+                        <div className="space-y-4">
+                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-teal/40">Search Neighbourhood</label>
+                            <div className="relative group">
+                                <Search size={18} className="absolute left-6 top-1/2 -translate-y-1/2 text-brand-teal group-focus-within:text-brand-dark transition-colors" />
+                                <input
+                                    type="text"
+                                    placeholder="Search gear..."
+                                    value={search}
+                                    onChange={e => setSearch(e.target.value)}
+                                    className="w-full pl-16 pr-6 py-5 rounded-3xl glass-card bg-white/60 dark:bg-brand-dark/20 border-none outline-none text-xs font-black text-brand-dark dark:text-brand-frost placeholder:text-brand-teal/20 transition-all focus:ring-4 focus:ring-brand-green/10 shadow-inner"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Category List */}
+                        <div className="space-y-6">
+                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-teal/40">Category Catalog</label>
+                            <div className="flex flex-col gap-2">
+                                {['All', ...CATEGORIES].map(cat => (
+                                    <button
+                                        key={cat}
+                                        onClick={() => setCategory(cat)}
+                                        className={`flex items-center justify-between px-6 py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.1em] transition-all group ${category === cat
+                                            ? 'bg-brand-dark text-brand-frost dark:bg-brand-green dark:text-brand-dark shadow-2xl scale-[1.02]'
+                                            : 'text-brand-teal/60 hover:bg-brand-teal/5'
+                                            }`}
+                                    >
+                                        {cat}
+                                        <ChevronRight size={14} className={`group-hover:translate-x-1 transition-transform ${category === cat ? 'opacity-100' : 'opacity-0'}`} />
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Distance Slider */}
+                        <div className="space-y-8 glass-card !p-8 !rounded-[2.5rem] bg-brand-teal/[0.02] border-brand-teal/5">
+                            <div className="flex justify-between items-center">
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-teal/40">Proximity</label>
+                                <span className="text-xs font-black text-brand-dark dark:text-brand-frost uppercase">{maxDistance}km</span>
+                            </div>
+                            <input
+                                type="range"
+                                min="1"
+                                max="50"
+                                value={maxDistance}
+                                onChange={e => setMaxDistance(Number(e.target.value))}
+                                className="w-full h-1.5 bg-brand-teal/10 rounded-lg appearance-none cursor-pointer accent-brand-green"
+                            />
+                            <div className="flex justify-between text-[8px] font-black text-brand-teal/30 uppercase tracking-widest">
+                                <span>1km Radius</span>
+                                <span>50km Radius</span>
+                            </div>
+                        </div>
+
+                        {/* Verified Toggle */}
+                        <button
+                            onClick={() => setVerifiedOnly(!verifiedOnly)}
+                            className={`flex items-center justify-between p-6 rounded-[2rem] glass-card transition-all group ${verifiedOnly ? 'bg-brand-green/10 border-brand-green/40 shadow-inner' : 'hover:bg-brand-teal/5'}`}
+                        >
+                            <div className="flex items-center gap-4">
+                                <div className={`p-3 rounded-2xl shadow-xl transition-all ${verifiedOnly ? 'bg-brand-green text-brand-dark rotate-12' : 'bg-brand-teal/10 text-brand-teal'}`}>
+                                    <ShieldCheck size={20} />
+                                </div>
+                                <div className="text-left">
+                                    <div className="text-[11px] font-black text-brand-dark dark:text-brand-frost leading-none mb-1 uppercase tracking-tight">Verified Only</div>
+                                    <div className="text-[9px] font-bold text-brand-teal/40 uppercase tracking-widest">Trusted Hosts</div>
+                                </div>
+                            </div>
+                            <div className={`w-10 h-5 rounded-full transition-colors relative flex items-center px-1 ${verifiedOnly ? 'bg-brand-green' : 'bg-brand-teal/20'}`}>
+                                <div className={`w-3 h-3 rounded-sm bg-white shadow-md transition-all ${verifiedOnly ? 'translate-x-[20px]' : 'translate-x-0'}`} />
+                            </div>
+                        </button>
+                    </aside>
+
+                    {/* Main Content Area */}
+                    <main className="flex flex-col gap-10">
+                        {/* Mobile Filter Trigger */}
+                        <div className="lg:hidden flex gap-4">
+                            <Button
+                                variant="outline"
+                                className="flex-1 !rounded-[1.5rem] !py-5 bg-white/60 dark:bg-brand-dark/20 shadow-xl"
+                                onClick={() => setIsFilterDrawerOpen(true)}
+                            >
+                                <Filter size={18} /> Filters {countActiveFilters() > 0 && `(${countActiveFilters()})`}
+                            </Button>
+                            <Button variant="primary" className="!rounded-[1.5rem] px-8" onClick={() => navigate('/map')}>
+                                <MapIcon size={18} />
+                            </Button>
+                        </div>
+
+                        {/* Results Grid */}
+                        {loading ? (
+                            <LoadingGrid count={6} />
+                        ) : error ? (
+                            <ErrorState message={error} onRetry={loadItems} />
+                        ) : items.length === 0 ? (
+                            <EmptyState
+                                icon={Search}
+                                title="No local matches"
+                                description="Try adjusting your proximity or expanding the category catalog to find gear in neighboring areas."
+                                action={<Button variant="primary" size="lg" className="!rounded-2xl" onClick={clearFilters}>Reset Neighborhood View</Button>}
+                            />
+                        ) : (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
+                                {items.map((item, i) => (
+                                    <div key={item.id} className="animate-fade-up" style={{ animationDelay: `${(i % 6) * 100}ms` }}>
+                                        <ItemCard item={item} />
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </main>
+                </div>
+            </Container>
+
+            {/* Mobile Filter Drawer Overlay */}
+            {isFilterDrawerOpen && (
+                <div className="fixed inset-0 z-[100] lg:hidden animate-fade-in">
+                    <div className="absolute inset-0 bg-brand-dark/80 backdrop-blur-xl" onClick={() => setIsFilterDrawerOpen(false)} />
+                    <div className="absolute right-0 top-0 bottom-0 w-[90%] bg-white dark:bg-brand-dark p-10 overflow-y-auto animate-slide-in-right rounded-l-[3rem] shadow-[-20px_0_80px_rgba(0,0,0,0.5)]">
+                        <div className="flex items-center justify-between mb-12">
+                            <h2 className="text-3xl font-black text-brand-dark dark:text-brand-frost tracking-tighter uppercase leading-none">Filters</h2>
+                            <button onClick={() => setIsFilterDrawerOpen(false)} className="p-3 rounded-2xl glass-card text-brand-teal active:scale-95 transition-all">
+                                <X size={28} />
+                            </button>
+                        </div>
+
+                        <div className="space-y-12">
                             {/* Category */}
-                            <div className="flex flex-col gap-1.5 min-w-48">
-                                <label className="text-xs font-bold uppercase tracking-wider text-[#73ab84] dark:text-[#79c7c5]">Category</label>
+                            <div className="space-y-6">
+                                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-teal/40">Neighborhood Catalog</label>
                                 <div className="flex flex-wrap gap-2">
-                                    {CATEGORIES.map(cat => (
+                                    {['All', ...CATEGORIES].map(cat => (
                                         <button
                                             key={cat}
                                             onClick={() => setCategory(cat)}
-                                            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${category === cat
-                                                ? 'bg-[#000501] text-[#ade1e5] dark:bg-[#99d19c] dark:text-[#000501]'
-                                                : 'bg-[#99d19c]/20 text-[#3d6b50] hover:bg-[#99d19c]/35 dark:bg-[#73ab84]/15 dark:text-[#79c7c5] dark:hover:bg-[#73ab84]/25'
+                                            className={`px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${category === cat
+                                                ? 'bg-brand-dark text-brand-frost dark:bg-brand-green dark:text-brand-dark shadow-xl scale-[1.05]'
+                                                : 'bg-brand-teal/5 text-brand-teal/60'
                                                 }`}
                                         >
                                             {cat}
@@ -144,25 +342,51 @@ export default function Browse() {
                                 </div>
                             </div>
 
-                            {/* Max price */}
-                            <div className="flex flex-col gap-1.5">
-                                <label className="text-xs font-bold uppercase tracking-wider text-[#73ab84] dark:text-[#79c7c5]">Max Price / Day</label>
+                            {/* Distance */}
+                            <div className="space-y-8 p-8 rounded-[2.5rem] bg-brand-teal/[0.02] border border-brand-teal/5">
+                                <div className="flex justify-between items-center">
+                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-teal/40">Max Distance</label>
+                                    <span className="text-sm font-black text-brand-dark dark:text-brand-frost uppercase">{maxDistance}km</span>
+                                </div>
                                 <input
-                                    type="number"
-                                    placeholder="e.g. 1000"
-                                    value={maxPrice}
-                                    onChange={e => setMaxPrice(e.target.value)}
-                                    className="w-36 px-4 py-2.5 rounded-xl text-sm font-medium bg-white/60 dark:bg-[#000501]/60 border border-[#99d19c]/40 dark:border-[#79c7c5]/20 text-[#000501] dark:text-[#ade1e5] outline-none focus:ring-2 focus:ring-[#79c7c5]/50"
+                                    type="range"
+                                    min="1"
+                                    max="50"
+                                    value={maxDistance}
+                                    onChange={e => setMaxDistance(Number(e.target.value))}
+                                    className="w-full h-2 bg-brand-teal/10 rounded-lg appearance-none cursor-pointer accent-brand-green"
                                 />
                             </div>
 
-                            {hasFilters && (
-                                <Button variant="ghost" size="sm" onClick={clearFilters}>
-                                    <X size={14} /> Clear all
-                                </Button>
-                            )}
+                            {/* Price */}
+                            <div className="space-y-6">
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-teal/40">Budget (₹ / Day)</label>
+                                <div className="flex gap-4">
+                                    <div className="flex-1 space-y-2">
+                                        <label className="text-[8px] font-black uppercase tracking-widest text-brand-teal/40 px-4">Maximum</label>
+                                        <input
+                                            type="number"
+                                            placeholder="Set max"
+                                            value={maxPrice}
+                                            onChange={e => setMaxPrice(e.target.value)}
+                                            className="w-full bg-brand-teal/5 p-6 rounded-3xl text-sm font-black border-none outline-none dark:text-white dark:bg-white/5 shadow-inner"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Drawer Actions */}
+                        <div className="sticky bottom-0 left-0 right-0 pt-16 pb-2 bg-gradient-to-t from-white dark:from-brand-dark via-white dark:via-brand-dark to-transparent">
+                            <Button variant="primary" size="lg" className="w-full !rounded-[2rem] shadow-2xl shadow-brand-green/20" onClick={() => setIsFilterDrawerOpen(false)}>
+                                Update Results
+                            </Button>
+                            <Button variant="ghost" size="sm" className="w-full mt-4 !text-[10px] font-black uppercase tracking-widest" onClick={clearFilters}>
+                                Reset Neighbourhood view
+                            </Button>
                         </div>
                     </div>
+<<<<<<< HEAD
                 )}
 
                 {/* Grid */}
@@ -185,6 +409,10 @@ export default function Browse() {
                 )}
 
             </Container>
+=======
+                </div>
+            )}
+>>>>>>> SharvariFrontend
         </div>
     );
 }

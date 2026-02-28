@@ -1,0 +1,148 @@
+import Rental from '../models/Rental.js';
+import Product from '../models/Product.js';
+
+// POST /api/rentals  (buyer only)
+export const createRental = async (req, res) => {
+    try {
+        const { productId, startDate, endDate } = req.body;
+        const renter = req.dbUser._id;
+
+        console.log(`🛒 [rentalController] POST /rentals | product: ${productId} | renter: ${renter}`);
+
+        if (!productId || !startDate || !endDate) {
+            return res.status(400).json({ error: 'productId, startDate, and endDate are required' });
+        }
+
+        const product = await Product.findById(productId);
+        if (!product) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+
+        if (!product.availability) {
+            return res.status(400).json({ error: 'Product is not available for rent' });
+        }
+
+        // Calculate total price
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+
+        if (days <= 0) {
+            return res.status(400).json({ error: 'endDate must be after startDate' });
+        }
+
+        const totalPrice = days * product.pricePerDay;
+
+        console.log(`💰 [rentalController] Rental: ${days} days × ₹${product.pricePerDay} = ₹${totalPrice}`);
+
+        const rental = await Rental.create({
+            product: productId,
+            renter,
+            startDate: start,
+            endDate: end,
+            totalPrice,
+        });
+
+        console.log(`✅ [rentalController] Rental created: ${rental._id}`);
+        res.status(201).json({ message: 'Rental request submitted', rental });
+    } catch (error) {
+        console.error('❌ [rentalController] createRental error:', error.message);
+        res.status(500).json({ error: 'Failed to create rental' });
+    }
+};
+
+// GET /api/rentals/me  (authenticated user – gets their own rentals as a renter)
+export const getMyRentals = async (req, res) => {
+    try {
+        const renterId = req.dbUser._id;
+        console.log(`📋 [rentalController] GET /rentals/me for user: ${renterId}`);
+
+        const rentals = await Rental.find({ renter: renterId })
+            .populate('product', 'title category pricePerDay images location')
+            .sort({ createdAt: -1 });
+
+        console.log(`✅ [rentalController] Found ${rentals.length} rentals for user: ${renterId}`);
+        res.status(200).json({ rentals });
+    } catch (error) {
+        console.error('❌ [rentalController] getMyRentals error:', error.message);
+        res.status(500).json({ error: 'Failed to fetch rentals' });
+    }
+};
+
+// GET /api/rentals/seller  (seller – gets rentals for their own listings)
+export const getSellerRentals = async (req, res) => {
+    try {
+        const sellerId = req.dbUser._id;
+        console.log(`🏪 [rentalController] GET /rentals/seller for seller: ${sellerId}`);
+
+        // Find all products owned by this seller, then all rentals for those products
+        const sellerProducts = await Product.find({ owner: sellerId }).select('_id');
+        const productIds = sellerProducts.map(p => p._id);
+
+        const rentals = await Rental.find({ product: { $in: productIds } })
+            .populate('product', 'title category pricePerDay images')
+            .populate('renter', 'name email')
+            .sort({ createdAt: -1 });
+
+        console.log(`✅ [rentalController] Seller ${sellerId} has ${rentals.length} incoming requests`);
+        res.status(200).json({ rentals });
+    } catch (error) {
+        console.error('❌ [rentalController] getSellerRentals error:', error.message);
+        res.status(500).json({ error: 'Failed to fetch seller rentals' });
+    }
+};
+
+
+// PATCH /api/rentals/:id/status  (seller only – approve/reject/complete)
+export const updateRentalStatus = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+        const sellerDbUser = req.dbUser;
+
+        console.log(`🔄 [rentalController] PATCH /rentals/${id}/status → ${status}`);
+
+        const validStatuses = ['approved', 'rejected', 'completed'];
+        if (!validStatuses.includes(status)) {
+            return res.status(400).json({ error: `Invalid status. Must be one of: ${validStatuses.join(', ')}` });
+        }
+
+        const rental = await Rental.findById(id).populate('product');
+        if (!rental) {
+            return res.status(404).json({ error: 'Rental not found' });
+        }
+
+        // Verify seller owns the product being rented
+        if (rental.product.owner.toString() !== sellerDbUser._id.toString()) {
+            console.warn(`🚫 [rentalController] Unauthorized status update by: ${sellerDbUser._id}`);
+            return res.status(403).json({ error: 'Forbidden – you do not own this product' });
+        }
+
+        rental.status = status;
+        await rental.save();
+
+        console.log(`✅ [rentalController] Rental ${id} status updated to: ${status}`);
+        res.status(200).json({ message: `Rental ${status}`, rental });
+    } catch (error) {
+        console.error('❌ [rentalController] updateRentalStatus error:', error.message);
+        res.status(500).json({ error: 'Failed to update rental status' });
+    }
+};
+
+// GET /api/admin/rentals  (admin only)
+export const getAllRentals = async (req, res) => {
+    try {
+        console.log('🔑 [rentalController] GET /admin/rentals (admin access)');
+
+        const rentals = await Rental.find()
+            .populate('product', 'title category pricePerDay')
+            .populate('renter', 'name email role')
+            .sort({ createdAt: -1 });
+
+        console.log(`✅ [rentalController] Admin fetched ${rentals.length} total rentals`);
+        res.status(200).json({ rentals, total: rentals.length });
+    } catch (error) {
+        console.error('❌ [rentalController] getAllRentals error:', error.message);
+        res.status(500).json({ error: 'Failed to fetch all rentals' });
+    }
+};
