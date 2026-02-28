@@ -1,45 +1,313 @@
 @import "tailwindcss";
 
-@layer base {
-  :root {
-    --color-black: #000501;
-    --color-muted-teal: #73AB84;
-    --color-celadon: #99D19C;
-    --color-pearl-aqua: #79C7C5;
-    --color-frosted-blue: #ADE1E5;
+/* =============================================
+   RENTIGO DESIGN SYSTEM
+   Color Palette:
+   - #000501  Deep Dark Base
+   - #73ab84  Muted Teal
+   - #99d19c  Celadon Green
+   - #79c7c5  Pearl Aqua
+   - #ade1e5  Frosted Blue
+============================================= */
 
-    /* Theme mappings - Light */
-    --bg-app: var(--color-frosted-blue);
-    --text-primary: var(--color-black);
-    --text-muted: var(--color-muted-teal);
-    --bg-card: var(--color-pearl-aqua);
-    --border-color: var(--color-celadon);
-    --btn-primary-bg: var(--color-black);
-    --btn-primary-text: var(--color-frosted-blue);
-    --nav-bg: var(--color-celadon);
-    --input-bg: var(--color-celadon);
-    --input-focus-border: var(--color-black);
-  }
+@theme {
+  --font-sans: 'Inter', system-ui, sans-serif;
 
-  .dark {
-    /* Theme mappings - Dark */
-    --bg-app: var(--color-black);
-    --text-primary: var(--color-frosted-blue);
-    --text-muted: var(--color-pearl-aqua);
-    --bg-card: var(--color-black);
-    --border-color: var(--color-muted-teal);
-    --btn-primary-bg: var(--color-celadon);
-    --btn-primary-text: var(--color-black);
-    --nav-bg: var(--color-black);
-    --input-bg: var(--color-black);
-    --input-focus-border: var(--color-frosted-blue);
-  }
+  /* Brand Colors */
+  --color-brand-dark: #000501;
+  --color-brand-teal: #73ab84;
+  --color-brand-green: #99d19c;
+  --color-brand-aqua: #79c7c5;
+  --color-brand-frost: #ade1e5;
+
+  /* Light Theme Semantic */
+  --color-bg-base: #f4fbf8;
+  --color-bg-surface: #e8f7f0;
+  --color-bg-card: rgba(255, 255, 255, 0.72);
+  --color-bg-glass: rgba(255, 255, 255, 0.18);
+  --color-border: rgba(115, 171, 132, 0.35);
+  --color-text-primary: #000501;
+  --color-text-secondary: #3d6b50;
+  --color-text-muted: #6a9e7e;
+
+  /* Dark Theme Semantic */
+  --color-dark-base: #000501;
+  --color-dark-surface: #0a1a10;
+  --color-dark-card: rgba(0, 5, 1, 0.75);
+  --color-dark-glass: rgba(0, 5, 1, 0.35);
+  --color-dark-border: rgba(121, 199, 197, 0.25);
+
+  /* Transitions */
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* =============================================
+   BASE
+============================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html.dark {
+  color-scheme: dark;
 }
 
 body {
-  background-color: var(--bg-app);
-  color: var(--text-primary);
-  font-family: 'Inter', sans-serif;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: var(--font-sans);
   min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Light Mode Body */
+body {
+  background: linear-gradient(135deg, #d1f0e8 0%, #b8e8e6 40%, #c7f0d2 100%);
+  color: #000501;
+}
+
+/* Dark Mode Body */
+html.dark body {
+  background: linear-gradient(135deg, #000501 0%, #0a1a10 40%, #061212 100%);
+  color: #ade1e5;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* =============================================
+   GLASSMORPHISM UTILITIES
+============================================= */
+
+.glass {
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 8px 32px rgba(0, 5, 1, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+html.dark .glass {
+  background: rgba(0, 5, 1, 0.45);
+  border: 1px solid rgba(121, 199, 197, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(173, 225, 229, 0.1);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 24px rgba(0, 5, 1, 0.07), 0 1px 4px rgba(0, 5, 1, 0.04);
+}
+
+html.dark .glass-card {
+  background: rgba(10, 26, 16, 0.75);
+  border: 1px solid rgba(121, 199, 197, 0.18);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45), 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.glass-nav {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border-bottom: 1px solid rgba(153, 209, 156, 0.3);
+  box-shadow: 0 2px 20px rgba(0, 5, 1, 0.06);
+}
+
+html.dark .glass-nav {
+  background: rgba(0, 5, 1, 0.85);
+  border-bottom: 1px solid rgba(121, 199, 197, 0.15);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* =============================================
+   CUSTOM SCROLLBAR
+============================================= */
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #79c7c5;
+  border-radius: 100px;
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: #73ab84;
+}
+
+/* =============================================
+   ANIMATIONS
+============================================= */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: -200% center;
+  }
+
+  to {
+    background-position: 200% center;
+  }
+}
+
+.animate-fade-up {
+  animation: fadeInUp 0.55s var(--ease-smooth) both;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease both;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.35s var(--ease-smooth) both;
+}
+
+.delay-100 {
+  animation-delay: 0.1s;
+}
+
+.delay-200 {
+  animation-delay: 0.2s;
+}
+
+.delay-300 {
+  animation-delay: 0.3s;
+}
+
+.delay-400 {
+  animation-delay: 0.4s;
+}
+
+/* =============================================
+   TEXT GRADIENT
+============================================= */
+
+.text-gradient {
+  background: linear-gradient(135deg, #000501 0%, #73ab84 50%, #79c7c5 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+html.dark .text-gradient {
+  background: linear-gradient(135deg, #99d19c 0%, #79c7c5 50%, #ade1e5 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* =============================================
+   HOVER CARDS
+============================================= */
+
+.card-hover {
+  transition: transform 0.25s var(--ease-smooth), box-shadow 0.25s var(--ease-smooth);
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 48px rgba(0, 5, 1, 0.14), 0 4px 12px rgba(0, 5, 1, 0.08);
+}
+
+html.dark .card-hover:hover {
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.6), 0 4px 12px rgba(121, 199, 197, 0.1);
+}
+
+/* =============================================
+   FOCUS RINGS
+============================================= */
+
+.focus-ring {
+  outline: none;
+  transition: box-shadow 0.2s ease;
+}
+
+.focus-ring:focus {
+  box-shadow: 0 0 0 3px rgba(121, 199, 197, 0.5);
+}
+
+/* =============================================
+   HERO BACKGROUND
+============================================= */
+
+.hero-bg {
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(121, 199, 197, 0.35) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 80%, rgba(153, 209, 156, 0.3) 0%, transparent 65%),
+    linear-gradient(160deg, #d8f5ee 0%, #c2e8e6 55%, #cdf2d5 100%);
+}
+
+html.dark .hero-bg {
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(121, 199, 197, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 80%, rgba(153, 209, 156, 0.1) 0%, transparent 65%),
+    linear-gradient(160deg, #000501 0%, #061210 55%, #051208 100%);
+}
+
+/* =============================================
+   MISC
+============================================= */
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
