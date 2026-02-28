@@ -56,19 +56,19 @@ export default function Login() {
             <div className="w-full max-w-md">
 
                 {/* Logo */}
-                <div className="text-center mb-10">
-                    <div className="inline-flex items-center gap-2 mb-4">
-                        <div className="w-10 h-10 rounded-xl bg-[#000501] dark:bg-[#99d19c] flex items-center justify-center">
-                            <MapPin size={18} className="text-[#ade1e5] dark:text-[#000501]" />
+                <div className="text-center mb-10 animate-fade-up">
+                    <div className="inline-flex items-center gap-2.5 mb-6">
+                        <div className="w-12 h-12 rounded-2xl bg-brand-dark dark:bg-brand-green flex items-center justify-center shadow-lg">
+                            <MapPin size={24} className="text-brand-frost dark:text-brand-dark" />
                         </div>
-                        <span className="text-2xl font-black text-[#000501] dark:text-[#ade1e5]">
-                            Renti<span className="text-[#73ab84] dark:text-[#99d19c]">GO</span>
+                        <span className="text-3xl font-black tracking-tighter text-brand-dark dark:text-brand-frost">
+                            Renti<span className="text-brand-teal dark:text-brand-green">GO</span>
                         </span>
                     </div>
-                    <h1 className="text-3xl font-black text-[#000501] dark:text-[#ade1e5] mb-2">Welcome back</h1>
-                    <p className="text-[#73ab84] dark:text-[#79c7c5] text-sm font-medium">
+                    <h1 className="text-4xl font-black tracking-tight text-brand-dark dark:text-brand-frost mb-2">Welcome back</h1>
+                    <p className="text-brand-teal dark:text-brand-aqua/80 text-sm font-bold tracking-wide uppercase">
                         {step === STEPS.MOBILE
-                            ? 'Enter your mobile number to continue'
+                            ? 'Connect with your neighbours'
                             : `Enter the OTP sent to +91 ${mobile}`}
                     </p>
                 </div>

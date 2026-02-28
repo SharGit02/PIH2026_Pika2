@@ -9,21 +9,21 @@ export default function Badge({ children, variant = 'default', className = '' })
 
     const variants = {
         default:
-            'bg-[#99d19c]/20 text-[#2d6b3a] dark:bg-[#99d19c]/15 dark:text-[#99d19c]',
+            'bg-brand-green/20 text-brand-dark dark:bg-brand-green/10 dark:text-brand-green',
         success:
-            'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300',
+            'bg-emerald-100/80 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300',
         warning:
-            'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
+            'bg-amber-100/80 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
         error:
-            'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300',
+            'bg-red-100/80 text-red-800 dark:bg-red-900/30 dark:text-red-300',
         info:
-            'bg-[#79c7c5]/20 text-[#1a6a6a] dark:bg-[#79c7c5]/15 dark:text-[#79c7c5]',
+            'bg-brand-aqua/20 text-brand-dark dark:bg-brand-aqua/10 dark:text-brand-aqua',
         pending:
-            'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
+            'bg-amber-100/80 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
         approved:
-            'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300',
+            'bg-emerald-100/80 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300',
         returned:
-            'bg-[#79c7c5]/20 text-[#1a6a6a] dark:bg-[#79c7c5]/15 dark:text-[#79c7c5]',
+            'bg-brand-aqua/20 text-brand-dark dark:bg-brand-aqua/10 dark:text-brand-aqua',
     };
 
     return (

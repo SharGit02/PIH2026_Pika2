@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 /* =============================================
-   RENTIGO DESIGN SYSTEM
+   RENTIGO DESIGN SYSTEM (V4 Refined)
    Color Palette:
-   - #000501  Deep Dark Base
-   - #73ab84  Muted Teal
-   - #99d19c  Celadon Green
-   - #79c7c5  Pearl Aqua
-   - #ade1e5  Frosted Blue
+   - #000501  Deep Dark Base (Primary)
+   - #73ab84  Muted Teal (Secondary/Accent)
+   - #99d19c  Celadon Green (Success/Light Accent)
+   - #79c7c5  Pearl Aqua (Info/Action)
+   - #ade1e5  Frosted Blue (Highlight/Lightest)
 ============================================= */
 
 @theme {
@@ -20,115 +20,105 @@
   --color-brand-aqua: #79c7c5;
   --color-brand-frost: #ade1e5;
 
-  /* Light Theme Semantic */
-  --color-bg-base: #f4fbf8;
-  --color-bg-surface: #e8f7f0;
-  --color-bg-card: rgba(255, 255, 255, 0.72);
-  --color-bg-glass: rgba(255, 255, 255, 0.18);
-  --color-border: rgba(115, 171, 132, 0.35);
-  --color-text-primary: #000501;
-  --color-text-secondary: #3d6b50;
-  --color-text-muted: #6a9e7e;
+  /* Spacing Scale (Standard 4px) */
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+  --spacing-12: 3rem;
+  --spacing-16: 4rem;
+  --spacing-20: 5rem;
+  --spacing-24: 6rem;
 
-  /* Dark Theme Semantic */
-  --color-dark-base: #000501;
-  --color-dark-surface: #0a1a10;
-  --color-dark-card: rgba(0, 5, 1, 0.75);
-  --color-dark-glass: rgba(0, 5, 1, 0.35);
-  --color-dark-border: rgba(121, 199, 197, 0.25);
-
-  /* Transitions */
-  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  /* Custom Transitions */
+  --ease-in-out-soft: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* =============================================
-   BASE
+   BASE STYLES
 ============================================= */
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
 
 html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-html.dark {
-  color-scheme: dark;
 }
 
 body {
   font-family: var(--font-sans);
   min-height: 100vh;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* Light Mode Body */
-body {
-  background: linear-gradient(135deg, #d1f0e8 0%, #b8e8e6 40%, #c7f0d2 100%);
+  transition: background-color 0.4s ease, color 0.4s ease;
+  background-color: #f7fcf9;
   color: #000501;
 }
 
-/* Dark Mode Body */
 html.dark body {
-  background: linear-gradient(135deg, #000501 0%, #0a1a10 40%, #061212 100%);
+  background-color: #000501;
   color: #ade1e5;
 }
 
-#root {
-  min-height: 100vh;
-}
-
 /* =============================================
-   GLASSMORPHISM UTILITIES
+   GLASSMORPHISM 2.0 (Premium Tinted)
 ============================================= */
 
 .glass {
-  background: rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  box-shadow: 0 8px 32px rgba(0, 5, 1, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 10px 40px rgba(0, 5, 1, 0.05);
 }
 
 html.dark .glass {
-  background: rgba(0, 5, 1, 0.45);
-  border: 1px solid rgba(121, 199, 197, 0.2);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(173, 225, 229, 0.1);
+  background: rgba(0, 5, 1, 0.4);
+  border: 1px solid rgba(121, 199, 197, 0.15);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 4px 24px rgba(0, 5, 1, 0.07), 0 1px 4px rgba(0, 5, 1, 0.04);
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 30px rgba(0, 5, 1, 0.04), 0 1px 2px rgba(0, 5, 1, 0.03);
 }
 
 html.dark .glass-card {
-  background: rgba(10, 26, 16, 0.75);
-  border: 1px solid rgba(121, 199, 197, 0.18);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45), 0 1px 4px rgba(0, 0, 0, 0.3);
+  background: rgba(10, 26, 16, 0.7);
+  border: 1px solid rgba(121, 199, 197, 0.12);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .glass-nav {
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(24px) saturate(200%);
-  -webkit-backdrop-filter: blur(24px) saturate(200%);
-  border-bottom: 1px solid rgba(153, 209, 156, 0.3);
-  box-shadow: 0 2px 20px rgba(0, 5, 1, 0.06);
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-bottom: 1px solid rgba(153, 209, 156, 0.2);
+  box-shadow: 0 1px 15px rgba(0, 5, 1, 0.03);
+  transition: all 0.3s ease;
 }
 
 html.dark .glass-nav {
-  background: rgba(0, 5, 1, 0.85);
-  border-bottom: 1px solid rgba(121, 199, 197, 0.15);
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+  background: rgba(0, 5, 1, 0.8);
+  border-bottom: 1px solid rgba(121, 199, 197, 0.1);
+  box-shadow: 0 1px 15px rgba(0, 0, 0, 0.4);
+}
+
+/* =============================================
+   LAYOUT UTILITIES
+============================================= */
+
+.section-padding {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
+@media (min-width: 640px) {
+  .section-padding {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
 }
 
 /* =============================================

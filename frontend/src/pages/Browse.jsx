@@ -59,13 +59,13 @@ export default function Browse() {
     const hasFilters = search || category !== 'All' || maxPrice;
 
     return (
-        <div className="pt-24 pb-20 min-h-screen">
+        <div className="pb-24 animate-fade-in">
             <Container>
 
                 {/* Header */}
-                <div className="mb-8">
-                    <h1 className="text-4xl font-black text-[#000501] dark:text-[#ade1e5] mb-2">Browse Items</h1>
-                    <p className="text-[#73ab84] dark:text-[#79c7c5] font-medium">
+                <div className="mb-10 animate-fade-up">
+                    <h1 className="text-4xl font-black tracking-tight text-brand-dark dark:text-brand-frost mb-2">Browse Items</h1>
+                    <p className="text-brand-teal dark:text-brand-aqua/70 font-bold text-sm tracking-wide uppercase">
                         {loading ? 'Searching...' : `${items.length} items found near you`}
                     </p>
                 </div>
@@ -113,8 +113,8 @@ export default function Browse() {
                                             key={cat}
                                             onClick={() => setCategory(cat)}
                                             className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${category === cat
-                                                    ? 'bg-[#000501] text-[#ade1e5] dark:bg-[#99d19c] dark:text-[#000501]'
-                                                    : 'bg-[#99d19c]/20 text-[#3d6b50] hover:bg-[#99d19c]/35 dark:bg-[#73ab84]/15 dark:text-[#79c7c5] dark:hover:bg-[#73ab84]/25'
+                                                ? 'bg-[#000501] text-[#ade1e5] dark:bg-[#99d19c] dark:text-[#000501]'
+                                                : 'bg-[#99d19c]/20 text-[#3d6b50] hover:bg-[#99d19c]/35 dark:bg-[#73ab84]/15 dark:text-[#79c7c5] dark:hover:bg-[#73ab84]/25'
                                                 }`}
                                         >
                                             {cat}

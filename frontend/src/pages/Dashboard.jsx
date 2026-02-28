@@ -68,19 +68,22 @@ export default function Dashboard() {
         }, 0);
 
     return (
-        <div className="pt-24 pb-20 min-h-screen">
+        <div className="pb-24 animate-fade-in">
             <Container>
 
                 {/* Header */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-                    <div>
-                        <p className="text-sm font-bold uppercase tracking-widest text-[#73ab84] dark:text-[#79c7c5] mb-1">Your space</p>
-                        <h1 className="text-4xl font-black text-[#000501] dark:text-[#ade1e5] flex items-center gap-3">
-                            <LayoutDashboard size={32} /> Dashboard
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-12">
+                    <div className="animate-fade-up">
+                        <p className="text-xs font-black uppercase tracking-[0.2em] text-brand-teal dark:text-brand-aqua mb-2 opacity-80">Your space</p>
+                        <h1 className="text-4xl sm:text-5xl font-black text-brand-dark dark:text-brand-frost flex items-center gap-4 tracking-tighter">
+                            <div className="w-12 h-12 rounded-2xl bg-brand-green/20 dark:bg-brand-green/10 flex items-center justify-center">
+                                <LayoutDashboard size={28} className="text-brand-teal dark:text-brand-green" />
+                            </div>
+                            Dashboard
                         </h1>
                     </div>
-                    <Button variant="primary" size="md" onClick={() => navigate('/browse')}>
-                        <Plus size={16} /> Browse to Borrow
+                    <Button variant="primary" size="md" onClick={() => navigate('/browse')} className="shadow-brand-green/20">
+                        <Plus size={18} /> Browse to Borrow
                     </Button>
                 </div>
 
@@ -107,16 +110,16 @@ export default function Dashboard() {
                             key={id}
                             onClick={() => setActiveTab(id)}
                             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${activeTab === id
-                                    ? 'bg-[#000501] text-[#ade1e5] dark:bg-[#99d19c] dark:text-[#000501] shadow-sm'
-                                    : 'text-[#73ab84] dark:text-[#79c7c5] hover:bg-[#73ab84]/10 dark:hover:bg-[#79c7c5]/10'
+                                ? 'bg-[#000501] text-[#ade1e5] dark:bg-[#99d19c] dark:text-[#000501] shadow-sm'
+                                : 'text-[#73ab84] dark:text-[#79c7c5] hover:bg-[#73ab84]/10 dark:hover:bg-[#79c7c5]/10'
                                 }`}
                         >
                             <Icon size={15} />
                             {label}
                             {count > 0 && (
                                 <span className={`text-xs px-1.5 py-0.5 rounded-full font-bold ${activeTab === id
-                                        ? 'bg-white/20 text-inherit'
-                                        : 'bg-[#99d19c]/25 text-[#3d6b50] dark:bg-[#79c7c5]/15 dark:text-[#79c7c5]'
+                                    ? 'bg-white/20 text-inherit'
+                                    : 'bg-[#99d19c]/25 text-[#3d6b50] dark:bg-[#79c7c5]/15 dark:text-[#79c7c5]'
                                     }`}>
                                     {count}
                                 </span>
