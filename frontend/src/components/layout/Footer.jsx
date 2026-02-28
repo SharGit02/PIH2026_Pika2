@@ -1,74 +1,68 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Github, Twitter, Instagram } from 'lucide-react';
+import { MapPin, Github, Twitter, Instagram, ShieldCheck, Heart, User } from 'lucide-react';
+import Container from './Container.jsx';
 
 const FOOTER_LINKS = {
-    Product: [
-        { label: 'Browse Items', to: '/browse' },
-        { label: 'Dashboard', to: '/dashboard' },
-        { label: 'List an Item', to: '/dashboard' },
+    Borrow: [
+        { label: 'Browse Gear', to: '/browse' },
+        { label: 'My Bookings', to: '/my-bookings' },
+        { label: 'Wishlist', to: '/wishlist' },
+        { label: 'How it Works', to: '/' },
+    ],
+    Lend: [
+        { label: 'List an Item', to: '/list-item' },
+        { label: 'My Listings', to: '/my-listings' },
+        { label: 'Hosting Tools', to: '/my-listings' },
+        { label: 'SafeShare Guarantee', to: '/' },
     ],
     Company: [
         { label: 'About Us', to: '/' },
-        { label: 'How It Works', to: '/' },
         { label: 'Trust & Safety', to: '/' },
-    ],
-    Support: [
         { label: 'Help Center', to: '/' },
-        { label: 'Community', to: '/' },
         { label: 'Contact', to: '/' },
     ],
 };
 
 export default function Footer() {
     return (
-        <footer className="border-t border-[#99d19c]/25 dark:border-[#79c7c5]/10 mt-24">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
-
-                    {/* Brand */}
-                    <div className="col-span-2 md:col-span-1">
-                        <Link to="/" className="flex items-center gap-2 mb-4">
-                            <div className="w-8 h-8 rounded-xl bg-[#000501] dark:bg-[#99d19c] flex items-center justify-center">
-                                <MapPin size={16} className="text-[#ade1e5] dark:text-[#000501]" />
+        <footer className="pt-24 pb-12 bg-white/20 dark:bg-transparent border-t border-brand-teal/5">
+            <Container>
+                <div className="grid grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-16 items-start">
+                    {/* Brand Column */}
+                    <div className="col-span-2 space-y-8">
+                        <Link to="/" className="flex items-center gap-2 group">
+                            <div className="w-10 h-10 rounded-2xl bg-brand-dark dark:bg-brand-green flex items-center justify-center group-hover:rotate-12 transition-transform">
+                                <MapPin size={20} className="text-brand-frost dark:text-brand-dark" />
                             </div>
-                            <span className="text-xl font-black tracking-tight text-[#000501] dark:text-[#ade1e5]">
-                                Renti<span className="text-[#73ab84] dark:text-[#99d19c]">GO</span>
+                            <span className="text-2xl font-black tracking-tighter text-brand-dark dark:text-brand-frost uppercase">
+                                Renti<span className="text-brand-green">GO</span>
                             </span>
                         </Link>
-                        <p className="text-sm text-[#73ab84] dark:text-[#79c7c5] leading-relaxed max-w-[200px]">
-                            The hyperlocal rental marketplace. Borrow anything from people around you.
+
+                        <p className="text-sm font-bold text-brand-teal/60 dark:text-brand-aqua/40 leading-relaxed max-w-sm uppercase tracking-tight">
+                            The hyperlocal sharing economy. Borrow anything from verified neighbours in your local community.
                         </p>
-                        <div className="flex items-center gap-3 mt-5">
-                            {[
-                                { Icon: Twitter, href: '#', label: 'Twitter' },
-                                { Icon: Instagram, href: '#', label: 'Instagram' },
-                                { Icon: Github, href: '#', label: 'GitHub' },
-                            ].map(({ Icon, href, label }) => (
-                                <a
-                                    key={label}
-                                    href={href}
-                                    aria-label={label}
-                                    className="w-9 h-9 rounded-xl border border-[#99d19c]/40 dark:border-[#79c7c5]/20 flex items-center justify-center text-[#73ab84] dark:text-[#79c7c5] hover:bg-[#73ab84]/10 dark:hover:bg-[#79c7c5]/10 hover:border-[#73ab84] dark:hover:border-[#79c7c5]/40 transition-all duration-200"
-                                >
-                                    <Icon size={16} />
+
+                        <div className="flex gap-4">
+                            {[Twitter, Instagram, Github].map((Icon, i) => (
+                                <a key={i} href="#" className="w-10 h-10 rounded-2xl glass-card flex items-center justify-center text-brand-teal hover:bg-brand-green hover:text-brand-dark transition-all">
+                                    <Icon size={18} />
                                 </a>
                             ))}
                         </div>
                     </div>
 
-                    {/* Link groups */}
+                    {/* Link Groups */}
                     {Object.entries(FOOTER_LINKS).map(([group, links]) => (
-                        <div key={group}>
-                            <h4 className="text-sm font-bold text-[#000501] dark:text-[#ade1e5] mb-4 tracking-wide uppercase text-xs">
-                                {group}
-                            </h4>
-                            <ul className="flex flex-col gap-2.5">
+                        <div key={group} className="space-y-6">
+                            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-teal/40">{group}</h4>
+                            <ul className="space-y-4">
                                 {links.map(({ label, to }) => (
                                     <li key={label}>
                                         <Link
                                             to={to}
-                                            className="text-sm text-[#73ab84] dark:text-[#79c7c5] hover:text-[#000501] dark:hover:text-[#ade1e5] transition-colors duration-150 font-medium"
+                                            className="text-xs font-black text-brand-dark/70 dark:text-brand-frost/70 uppercase tracking-widest hover:text-brand-green transition-colors"
                                         >
                                             {label}
                                         </Link>
@@ -79,17 +73,22 @@ export default function Footer() {
                     ))}
                 </div>
 
-                {/* Bottom bar */}
-                <div className="mt-12 pt-6 border-t border-[#99d19c]/20 dark:border-[#79c7c5]/8 flex flex-col sm:flex-row justify-between items-center gap-3">
-                    <p className="text-xs text-[#73ab84] dark:text-[#79c7c5]">
-                        © 2026 RentiGO. All rights reserved.
-                    </p>
-                    <div className="flex items-center gap-4">
-                        <a href="#" className="text-xs text-[#73ab84] dark:text-[#79c7c5] hover:text-[#000501] dark:hover:text-[#ade1e5] transition-colors">Privacy Policy</a>
-                        <a href="#" className="text-xs text-[#73ab84] dark:text-[#79c7c5] hover:text-[#000501] dark:hover:text-[#ade1e5] transition-colors">Terms of Service</a>
+                {/* Bottom Bar */}
+                <div className="mt-24 pt-10 border-t border-brand-teal/5 flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div className="flex items-center gap-2 text-[10px] font-black text-brand-teal/40 uppercase tracking-widest">
+                        <span>© 2026 RENTIGO</span>
+                        <span className="w-1 h-1 rounded-full bg-brand-teal/20" />
+                        <span>MADE WITH LOVE FOR COMMUNITIES</span>
+                    </div>
+
+                    <div className="flex gap-8">
+                        <a href="#" className="text-[10px] font-black text-brand-teal/40 hover:text-brand-teal uppercase tracking-widest transition-colors">Privacy</a>
+                        <a href="#" className="text-[10px] font-black text-brand-teal/40 hover:text-brand-teal uppercase tracking-widest transition-colors">Terms</a>
+                        <a href="#" className="text-[10px] font-black text-brand-teal/40 hover:text-brand-teal uppercase tracking-widest transition-colors">Cookie Policy</a>
                     </div>
                 </div>
-            </div>
+            </Container>
         </footer>
     );
 }
+
