@@ -14,38 +14,56 @@ const MOCK_DATA = [
 function App() {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredItems = MOCK_DATA.filter(item => 
+  const filteredItems = MOCK_DATA.filter(item =>
     item.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
-    <div className="min-h-screen pb-20">
+    <div className="min-h-screen pb-20 pt-16 transition-colors duration-300">
       <Navbar />
 
       {/* Search Header */}
-      <header className="bg-white border-b border-slate-100 py-12 px-6">
+      <header className="border-b py-20 px-6 transition-colors duration-300" style={{ backgroundColor: 'var(--bg-app)', borderColor: 'var(--border-color)' }}>
         <div className="max-w-3xl mx-auto text-center">
-          <h1 className="text-4xl font-black text-slate-900 mb-6">Rent items from people around you.</h1>
-          <div className="relative group">
-            <input 
-              type="text" 
+          <h1 className="text-5xl md:text-6xl font-black mb-6 tracking-tight" style={{ color: 'var(--text-primary)' }}>
+            Rent items from people around you.
+          </h1>
+          <p className="text-xl mb-10 font-medium" style={{ color: 'var(--text-muted)' }}>
+            The best way to borrow and lend locally.
+          </p>
+          <div className="relative group max-w-2xl mx-auto">
+            <input
+              type="text"
               placeholder="What do you need today?"
-              className="w-full p-4 pl-6 bg-slate-100 rounded-2xl border-2 border-transparent focus:bg-white focus:border-blue-600 outline-none transition-all shadow-inner"
+              className="w-full p-5 pl-8 rounded-full border-2 outline-none transition-all font-bold text-lg"
+              style={{
+                backgroundColor: 'var(--input-bg)',
+                color: 'var(--text-primary)',
+                borderColor: 'var(--border-color)'
+              }}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <div className="absolute right-4 top-4 text-slate-400 font-bold">Search</div>
+            <button
+              className="absolute right-3 top-3 bottom-3 px-6 rounded-full font-bold transition-transform hover:scale-105"
+              style={{ backgroundColor: 'var(--btn-primary-bg)', color: 'var(--btn-primary-text)' }}
+            >
+              Search
+            </button>
           </div>
         </div>
       </header>
 
       {/* Grid */}
-      <main className="max-w-7xl mx-auto px-6 mt-12">
+      <main className="max-w-7xl mx-auto px-6 mt-16">
+        <div className="flex justify-between items-center mb-10">
+          <h2 className="text-3xl font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>Featured Items</h2>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {filteredItems.map(item => (
             <ItemCard key={item.id} {...item} />
           ))}
           {filteredItems.length === 0 && (
-            <div className="col-span-full text-center py-20 text-slate-400 font-medium">
+            <div className="col-span-full text-center py-20 font-bold text-xl" style={{ color: 'var(--text-muted)' }}>
               No items found matching "{searchTerm}"
             </div>
           )}

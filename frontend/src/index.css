@@ -1,8 +1,45 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-black: #000501;
+    --color-muted-teal: #73AB84;
+    --color-celadon: #99D19C;
+    --color-pearl-aqua: #79C7C5;
+    --color-frosted-blue: #ADE1E5;
+
+    /* Theme mappings - Light */
+    --bg-app: var(--color-frosted-blue);
+    --text-primary: var(--color-black);
+    --text-muted: var(--color-muted-teal);
+    --bg-card: var(--color-pearl-aqua);
+    --border-color: var(--color-celadon);
+    --btn-primary-bg: var(--color-black);
+    --btn-primary-text: var(--color-frosted-blue);
+    --nav-bg: var(--color-celadon);
+    --input-bg: var(--color-celadon);
+    --input-focus-border: var(--color-black);
+  }
+
+  .dark {
+    /* Theme mappings - Dark */
+    --bg-app: var(--color-black);
+    --text-primary: var(--color-frosted-blue);
+    --text-muted: var(--color-pearl-aqua);
+    --bg-card: var(--color-black);
+    --border-color: var(--color-muted-teal);
+    --btn-primary-bg: var(--color-celadon);
+    --btn-primary-text: var(--color-black);
+    --nav-bg: var(--color-black);
+    --input-bg: var(--color-black);
+    --input-focus-border: var(--color-frosted-blue);
+  }
+}
 
 body {
-  @apply bg-slate-50 text-slate-900 antialiased;
+  background-color: var(--bg-app);
+  color: var(--text-primary);
   font-family: 'Inter', sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
 }
