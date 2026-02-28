@@ -1,13 +1,29 @@
-import express from "express";
-import { clerkMiddleware, requireAuth } from "@clerk/express";
+import 'dotenv/config';
+import app from './src/app.js';
+import connectDB from './src/config/db.js';
 
-const app = express();
+const PORT = process.env.PORT || 5000;
 
-app.use(clerkMiddleware());
+const startServer = async () => {
+    try {
+        // Connect to MongoDB first
+        await connectDB();
 
-app.get("/protected", requireAuth(), (req, res) => {
-    res.json({
-        message: "Authorized",
-        clerkId: req.auth.userId
-    });
-});
+        // Start Express server
+        app.listen(PORT, () => {
+            console.log('');
+            console.log('🚀 ================================');
+            console.log(`🚀  RentiGO Backend running!`);
+            console.log(`🚀  Port     : ${PORT}`);
+            console.log(`🚀  API Base : http://localhost:${PORT}/api`);
+            console.log(`🚀  Health   : http://localhost:${PORT}/api/health`);
+            console.log('🚀 ================================');
+            console.log('');
+        });
+    } catch (error) {
+        console.error('💥 [Server] Failed to start:', error.message);
+        process.exit(1);
+    }
+};
+
+startServer();
