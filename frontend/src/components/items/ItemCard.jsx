@@ -47,7 +47,7 @@ export default function ItemCard({ item }) {
             <Card variant="glass" hover className="overflow-hidden h-full flex flex-col">
                 {/* Image Section */}
                 <div className="relative h-48 overflow-hidden bg-gradient-to-br from-brand-green/10 to-brand-teal/10">
-                    {imgError ? (
+                    {imgError || !imgSrc ? (
                         <div className="w-full h-full flex flex-col items-center justify-center gap-2 text-brand-teal/40">
                             <ImageOff size={32} />
                             <span className="text-[10px] font-black uppercase tracking-widest">{category}</span>

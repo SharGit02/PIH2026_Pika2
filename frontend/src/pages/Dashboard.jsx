@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
     LayoutDashboard, Package, Clock, CheckCircle2, RotateCcw, IndianRupee, Plus,
-    Calendar, ArrowRight, Loader2, Store, Trash2, Pencil, User, XCircle, Mail, X, Save,
+    Calendar, ArrowRight, Loader2, Store, Trash2, Pencil, User, XCircle, Mail, X, Save, ImagePlus, Image,
 } from 'lucide-react';
 import { useAuth } from '@clerk/clerk-react';
 import api, { withToken } from '../api/axios.js';
@@ -147,6 +147,7 @@ export default function Dashboard() {
     const [deletingId, setDeletingId] = useState(null);
     const [editItem, setEditItem] = useState(null);
     const [editForm, setEditForm] = useState({});
+    const [imageUploading, setImageUploading] = useState(false);
     const [updateSaving, setUpdateSaving] = useState(false);
 
     const loadData = useCallback(async () => {
@@ -231,7 +232,31 @@ export default function Dashboard() {
             pricePerDay: item.pricePerDay || '',
             category: item.category || '',
             availability: item.availability !== false,
+            images: item.images || [],
         });
+    };
+
+    const handleImageUpload = async (files) => {
+        if (!files || files.length === 0) return;
+        setImageUploading(true);
+        try {
+            const token = await getToken();
+            const formData = new FormData();
+            Array.from(files).forEach(f => formData.append('images', f));
+            const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'}/upload`, {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${token}` },
+                body: formData,
+            });
+            const data = await res.json();
+            if (data.urls) {
+                setEditForm(f => ({ ...f, images: [...(f.images || []), ...data.urls] }));
+            }
+        } catch (err) {
+            showToast('Image upload failed', 'error');
+        } finally {
+            setImageUploading(false);
+        }
     };
 
     const handleEditSave = async () => {
@@ -255,6 +280,7 @@ export default function Dashboard() {
             setUpdateSaving(false);
         }
     };
+
     const { userRole } = useRental(); // 'renter' or 'lender'
 
     const RENTER_TABS = [
@@ -475,45 +501,118 @@ export default function Dashboard() {
 
             {/* ── Edit Product Modal ── */}
             {editItem && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-md">
-                    <div className="bg-white dark:bg-[#003459] rounded-[2.5rem] p-8 w-full max-w-lg shadow-2xl space-y-6 animate-fade-up">
-                        <div className="flex items-center justify-between">
-                            <h2 className="text-xl font-black text-brand-dark dark:text-brand-frost tracking-tighter uppercase">Edit Listing</h2>
-                            <button onClick={() => setEditItem(null)} className="p-2 rounded-xl hover:bg-brand-teal/10 text-brand-teal"><X size={20} /></button>
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+                    <div className="bg-white dark:bg-[#00171F] rounded-[2.5rem] w-full max-w-xl shadow-2xl flex flex-col max-h-[90vh] animate-fade-up border border-brand-teal/10">
+                        {/* Modal Header */}
+                        <div className="flex items-center justify-between px-8 pt-8 pb-4 border-b border-brand-teal/10">
+                            <div>
+                                <h2 className="text-xl font-black text-brand-dark dark:text-brand-frost tracking-tighter uppercase">Edit Listing</h2>
+                                <p className="text-[10px] text-brand-teal/50 dark:text-brand-aqua/60 font-bold uppercase tracking-widest mt-0.5">{editItem.title}</p>
+                            </div>
+                            <button onClick={() => setEditItem(null)} className="p-2.5 rounded-2xl hover:bg-brand-teal/10 text-brand-teal transition-colors">
+                                <X size={20} />
+                            </button>
                         </div>
 
-                        <div className="space-y-4">
-                            <div>
-                                <label className="block text-[10px] font-black uppercase tracking-widest text-brand-teal/60 mb-1">Title</label>
-                                <input type="text" value={editForm.title} onChange={e => setEditForm(f => ({ ...f, title: e.target.value }))}
-                                    className="w-full px-4 py-3 rounded-2xl bg-brand-teal/5 dark:bg-white/5 border border-brand-teal/10 text-sm font-bold text-brand-dark dark:text-brand-frost outline-none focus:ring-2 focus:ring-brand-green/30" />
-                            </div>
-                            <div>
-                                <label className="block text-[10px] font-black uppercase tracking-widest text-brand-teal/60 mb-1">Description</label>
-                                <textarea rows={3} value={editForm.description} onChange={e => setEditForm(f => ({ ...f, description: e.target.value }))}
-                                    className="w-full px-4 py-3 rounded-2xl bg-brand-teal/5 dark:bg-white/5 border border-brand-teal/10 text-sm font-bold text-brand-dark dark:text-brand-frost outline-none focus:ring-2 focus:ring-brand-green/30 resize-none" />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-[10px] font-black uppercase tracking-widest text-brand-teal/60 mb-1">Price / Day (₹)</label>
-                                    <input type="number" value={editForm.pricePerDay} onChange={e => setEditForm(f => ({ ...f, pricePerDay: e.target.value }))}
-                                        className="w-full px-4 py-3 rounded-2xl bg-brand-teal/5 dark:bg-white/5 border border-brand-teal/10 text-sm font-bold text-brand-dark dark:text-brand-frost outline-none focus:ring-2 focus:ring-brand-green/30" />
+                        {/* Modal Body - scrollable */}
+                        <div className="flex-1 overflow-y-auto px-8 py-6 space-y-6">
+
+                            {/* Images section */}
+                            <div className="space-y-3">
+                                <label className="block text-[10px] font-black uppercase tracking-widest text-brand-teal/60 dark:text-brand-aqua/70">Photos</label>
+
+                                {/* Existing images grid */}
+                                <div className="grid grid-cols-3 gap-3">
+                                    {(editForm.images || []).map((url, idx) => (
+                                        <div key={idx} className="relative group aspect-square rounded-2xl overflow-hidden bg-brand-teal/5 border border-brand-teal/10">
+                                            <img src={url} alt="" className="w-full h-full object-cover" />
+                                            <button
+                                                onClick={() => setEditForm(f => ({ ...f, images: f.images.filter((_, i) => i !== idx) }))}
+                                                className="absolute top-1.5 right-1.5 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+                                            >
+                                                <X size={12} />
+                                            </button>
+                                        </div>
+                                    ))}
+
+                                    {/* Upload new image button */}
+                                    <label className={`aspect-square rounded-2xl border-2 border-dashed border-brand-teal/20 dark:border-brand-aqua/20 flex flex-col items-center justify-center gap-1.5 cursor-pointer hover:border-brand-green/50 hover:bg-brand-green/5 transition-all ${imageUploading ? 'opacity-50 pointer-events-none' : ''}`}>
+                                        {imageUploading ? (
+                                            <Loader2 size={22} className="animate-spin text-brand-teal/40" />
+                                        ) : (
+                                            <>
+                                                <ImagePlus size={22} className="text-brand-teal/40" />
+                                                <span className="text-[9px] font-black text-brand-teal/40 uppercase tracking-widest">Add</span>
+                                            </>
+                                        )}
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            multiple
+                                            className="hidden"
+                                            onChange={e => handleImageUpload(e.target.files)}
+                                        />
+                                    </label>
                                 </div>
-                                <div>
-                                    <label className="block text-[10px] font-black uppercase tracking-widest text-brand-teal/60 mb-1">Availability</label>
-                                    <select value={editForm.availability ? 'true' : 'false'} onChange={e => setEditForm(f => ({ ...f, availability: e.target.value === 'true' }))}
-                                        className="w-full px-4 py-3 rounded-2xl bg-brand-teal/5 dark:bg-white/5 border border-brand-teal/10 text-sm font-bold text-brand-dark dark:text-brand-frost outline-none focus:ring-2 focus:ring-brand-green/30">
-                                        <option value="true">Available</option>
-                                        <option value="false">Unavailable</option>
+                                <p className="text-[9px] font-bold text-brand-teal/40 dark:text-brand-aqua/40 uppercase tracking-widest">Click × on a photo to remove it. Max 5 photos.</p>
+                            </div>
+
+                            {/* Title */}
+                            <div className="space-y-1.5">
+                                <label className="block text-[10px] font-black uppercase tracking-widest text-brand-teal/60 dark:text-brand-aqua/70">Title</label>
+                                <input
+                                    type="text"
+                                    value={editForm.title}
+                                    onChange={e => setEditForm(f => ({ ...f, title: e.target.value }))}
+                                    placeholder="e.g. Canon DSLR 1500D"
+                                    className="w-full px-5 py-3.5 rounded-2xl bg-brand-teal/5 dark:bg-white/5 border border-brand-teal/10 dark:border-white/10 text-sm font-bold text-brand-dark dark:text-brand-frost placeholder:text-brand-teal/20 outline-none focus:ring-2 focus:ring-brand-green/30 transition"
+                                />
+                            </div>
+
+                            {/* Description */}
+                            <div className="space-y-1.5">
+                                <label className="block text-[10px] font-black uppercase tracking-widest text-brand-teal/60 dark:text-brand-aqua/70">Description</label>
+                                <textarea
+                                    rows={4}
+                                    value={editForm.description}
+                                    onChange={e => setEditForm(f => ({ ...f, description: e.target.value }))}
+                                    placeholder="Describe condition, accessories included, pickup info..."
+                                    className="w-full px-5 py-3.5 rounded-2xl bg-brand-teal/5 dark:bg-white/5 border border-brand-teal/10 dark:border-white/10 text-sm font-bold text-brand-dark dark:text-brand-frost placeholder:text-brand-teal/20 outline-none focus:ring-2 focus:ring-brand-green/30 resize-none transition"
+                                />
+                            </div>
+
+                            {/* Price + Availability row */}
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-1.5">
+                                    <label className="block text-[10px] font-black uppercase tracking-widest text-brand-teal/60 dark:text-brand-aqua/70">Price / Day (₹)</label>
+                                    <input
+                                        type="number"
+                                        value={editForm.pricePerDay}
+                                        onChange={e => setEditForm(f => ({ ...f, pricePerDay: e.target.value }))}
+                                        className="w-full px-5 py-3.5 rounded-2xl bg-brand-teal/5 dark:bg-white/5 border border-brand-teal/10 dark:border-white/10 text-sm font-bold text-brand-dark dark:text-brand-frost outline-none focus:ring-2 focus:ring-brand-green/30 transition"
+                                    />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="block text-[10px] font-black uppercase tracking-widest text-brand-teal/60 dark:text-brand-aqua/70">Availability</label>
+                                    <select
+                                        value={editForm.availability ? 'true' : 'false'}
+                                        onChange={e => setEditForm(f => ({ ...f, availability: e.target.value === 'true' }))}
+                                        className="w-full px-5 py-3.5 rounded-2xl bg-brand-teal/5 dark:bg-white/5 border border-brand-teal/10 dark:border-white/10 text-sm font-bold text-brand-dark dark:text-brand-frost outline-none focus:ring-2 focus:ring-brand-green/30 transition"
+                                    >
+                                        <option value="true">✅ Available</option>
+                                        <option value="false">⛔ Unavailable</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="flex gap-3 pt-2">
-                            <Button variant="outline" className="flex-1 !rounded-2xl" onClick={() => setEditItem(null)} disabled={updateSaving}>Cancel</Button>
-                            <Button variant="primary" className="flex-1 !rounded-2xl" onClick={handleEditSave} disabled={updateSaving}>
-                                {updateSaving ? <><Loader2 size={15} className="animate-spin mr-2" /> Saving...</> : <><Save size={15} className="mr-1" /> Save Changes</>}
+                        {/* Modal Footer */}
+                        <div className="px-8 py-6 border-t border-brand-teal/10 flex gap-3">
+                            <Button variant="outline" className="flex-1 !rounded-2xl" onClick={() => setEditItem(null)} disabled={updateSaving}>
+                                Cancel
+                            </Button>
+                            <Button variant="primary" className="flex-1 !rounded-2xl shadow-xl shadow-brand-green/20" onClick={handleEditSave} disabled={updateSaving || imageUploading}>
+                                {updateSaving ? <><Loader2 size={15} className="animate-spin mr-2" /> Saving...</> : <><Save size={15} className="mr-1.5" /> Save Changes</>}
                             </Button>
                         </div>
                     </div>

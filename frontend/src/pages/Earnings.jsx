@@ -99,13 +99,12 @@ export default function Earnings() {
                             <div className="p-3 rounded-2xl bg-brand-dark text-white">
                                 <IndianRupee size={24} />
                             </div>
-                            <div className="flex items-center gap-1 text-[10px] font-black text-brand-dark uppercase tracking-widest bg-white/40 px-3 py-1.5 rounded-full">
+                            <div className="flex items-center gap-1 text-[10px] font-black text-brand-dark dark:text-brand-frost uppercase tracking-widest bg-white/40 dark:bg-white/10 px-3 py-1.5 rounded-full">
                                 <TrendingUp size={12} /> +12% this week
                             </div>
                         </div>
-                        <div className="text-[11px] font-black text-brand-dark/60 uppercase tracking-widest mb-1">Available for Payout</div>
-                        <div className="text-5xl font-black text-brand-dark tracking-tighter">₹{processedEarnings.toLocaleString('en-IN')}</div>
-                        <Button variant="primary" className="w-full mt-8 !bg-brand-dark !text-white !rounded-2xl">Transfer to Account</Button>
+                        <div className="text-[11px] font-black text-brand-dark/60 dark:text-brand-frost/60 uppercase tracking-widest mb-1">Available for Payout</div>
+                        <div className="text-5xl font-black text-brand-dark dark:text-brand-frost tracking-tighter">₹{processedEarnings.toLocaleString('en-IN')}</div>
                     </Card>
 
                     <Card variant="glass" className="!p-8 bg-brand-teal/5 border-brand-teal/10">
@@ -114,10 +113,10 @@ export default function Earnings() {
                                 <PieChart size={24} />
                             </div>
                         </div>
-                        <div className="text-[11px] font-black text-brand-teal/60 uppercase tracking-widest mb-1">Projected Monthly</div>
+                        <div className="text-[11px] font-black text-brand-teal/60 dark:text-brand-aqua/80 uppercase tracking-widest mb-1">Projected Monthly</div>
                         <div className="text-4xl font-black text-brand-dark dark:text-brand-frost tracking-tighter">₹8,400</div>
                         <div className="mt-8 space-y-2">
-                            <div className="flex justify-between text-[10px] font-black text-brand-teal/40 uppercase">
+                            <div className="flex justify-between text-[10px] font-black text-brand-teal/50 dark:text-brand-aqua/60 uppercase">
                                 <span>Goal Progress</span>
                                 <span>65%</span>
                             </div>
@@ -178,8 +177,8 @@ export default function Earnings() {
                                             <div className="flex gap-8 text-right">
                                                 {prod.securityDeposit > 0 && (
                                                     <div>
-                                                        <div className="text-[9px] font-black text-brand-teal/40 uppercase tracking-widest mb-0.5">Deposit Held</div>
-                                                        <div className="text-sm font-black text-[#3C474B]">₹{prod.securityDeposit.toLocaleString('en-IN')}</div>
+                                                        <div className="text-[9px] font-black text-brand-teal/40 dark:text-brand-aqua/50 uppercase tracking-widest mb-0.5">Deposit Held</div>
+                                                        <div className="text-sm font-black text-brand-dark dark:text-brand-frost">₹{prod.securityDeposit.toLocaleString('en-IN')}</div>
                                                     </div>
                                                 )}
                                                 <div>

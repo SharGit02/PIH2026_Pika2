@@ -138,12 +138,19 @@ export default function Messages() {
             <Container className="flex-1 flex gap-0 lg:gap-8 pb-10">
                 {/* Chat Sidebar */}
                 <aside className={`w-full lg:w-[380px] flex-col ${activeChat && 'hidden lg:flex'} flex`}>
-                    <div className="py-8 space-y-8 flex-1 flex flex-col">
-                        <div className="flex justify-between items-start">
+                    <div className="py-8 space-y-6 flex-1 flex flex-col">
+                        <div className="flex justify-between items-center">
                             <div>
-                                <h1 className="text-3xl font-black text-brand-dark dark:text-brand-frost tracking-tighter uppercase mb-2">Inbox</h1>
-                                <p className="text-[10px] font-black text-brand-teal/40 uppercase tracking-widest">Connect with your community</p>
+                                <h1 className="text-3xl font-black text-brand-dark dark:text-brand-frost tracking-tighter uppercase mb-1">Inbox</h1>
+                                <p className="text-[10px] font-black text-brand-teal/40 dark:text-brand-aqua/50 uppercase tracking-widest">Neighbourhood Chat</p>
                             </div>
+                            <button
+                                onClick={() => setShowConnectModal(true)}
+                                className="p-3 rounded-2xl bg-brand-green text-white hover:bg-brand-green/80 transition-all shadow-lg shadow-brand-green/20"
+                                title="Start New Chat"
+                            >
+                                <MailPlus size={18} />
+                            </button>
                         </div>
 
                         <div className="relative">
@@ -159,8 +166,15 @@ export default function Messages() {
                             {fetchingChats && chats.length === 0 ? (
                                 <div className="flex justify-center p-8"><Loader2 className="animate-spin text-brand-teal/50" /></div>
                             ) : chats.length === 0 ? (
-                                <div className="text-center p-8 glass-card rounded-[2rem] border-brand-teal/10">
-                                    <p className="text-xs font-bold text-brand-teal/60">No chats yet. Connect with someone via email!</p>
+                                <div className="text-center p-8 glass-card rounded-[2rem] border-brand-teal/10 space-y-4">
+                                    <p className="text-xs font-bold text-brand-dark dark:text-brand-frost">No chats yet.</p>
+                                    <p className="text-[10px] font-bold text-brand-teal/60 dark:text-brand-aqua/50 uppercase tracking-widest leading-relaxed">Click the ✉️ button above to start a conversation with any RentiGO user.</p>
+                                    <button
+                                        onClick={() => setShowConnectModal(true)}
+                                        className="px-5 py-2.5 rounded-2xl bg-brand-green text-white text-[10px] font-black uppercase tracking-widest shadow-lg shadow-brand-green/20"
+                                    >
+                                        Start New Chat
+                                    </button>
                                 </div>
                             ) : (
                                 chats.map(chat => {
@@ -185,8 +199,11 @@ export default function Messages() {
                                                         {lastMsg ? formatTime(lastMsg.createdAt) : ''}
                                                     </span>
                                                 </div>
-                                                <p className={`text-[10px] font-bold line-clamp-1 truncate ${activeChat?._id === chat._id ? 'opacity-80' : 'text-brand-teal/60'}`}>
+                                                <p className={`text-[10px] font-bold line-clamp-1 truncate ${activeChat?._id === chat._id ? 'opacity-80' : 'text-brand-teal/60 dark:text-brand-aqua/50'}`}>
                                                     {lastMsg ? lastMsg.text : 'No messages yet'}
+                                                </p>
+                                                <p className={`text-[9px] font-bold mt-0.5 truncate ${activeChat?._id === chat._id ? 'opacity-50' : 'text-brand-teal/30 dark:text-brand-aqua/30'}`}>
+                                                    {otherUser?.email}
                                                 </p>
                                             </div>
                                         </button>
@@ -195,6 +212,37 @@ export default function Messages() {
                             )}
                         </div>
                     </div>
+
+                    {/* Connect Modal */}
+                    {showConnectModal && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md" onClick={() => setShowConnectModal(false)}>
+                            <div className="bg-white dark:bg-[#00171F] rounded-[2.5rem] p-8 w-full max-w-sm shadow-2xl border border-brand-teal/10 animate-fade-up" onClick={e => e.stopPropagation()}>
+                                <h2 className="text-lg font-black text-brand-dark dark:text-brand-frost uppercase tracking-tighter mb-1">New Conversation</h2>
+                                <p className="text-[10px] font-bold text-brand-teal/50 dark:text-brand-aqua/50 uppercase tracking-widest mb-6">Enter the email of another RentiGO user</p>
+                                <form onSubmit={handleConnect} className="space-y-4">
+                                    <input
+                                        type="email"
+                                        value={connectEmail}
+                                        onChange={e => { setConnectEmail(e.target.value); setConnectError(''); }}
+                                        placeholder="user@example.com"
+                                        className="w-full px-5 py-4 rounded-2xl bg-brand-teal/5 dark:bg-white/5 border border-brand-teal/10 dark:border-white/10 text-sm font-bold text-brand-dark dark:text-brand-frost placeholder:text-brand-teal/20 outline-none focus:ring-2 focus:ring-brand-green/30"
+                                        autoFocus
+                                    />
+                                    {connectError && <p className="text-xs text-red-500 font-bold">{connectError}</p>}
+                                    <div className="flex gap-3">
+                                        <button type="button" onClick={() => { setShowConnectModal(false); setConnectEmail(''); setConnectError(''); }}
+                                            className="flex-1 py-3.5 rounded-2xl border border-brand-teal/20 text-brand-teal dark:text-brand-aqua text-xs font-black uppercase tracking-widest hover:bg-brand-teal/5 transition">
+                                            Cancel
+                                        </button>
+                                        <button type="submit" disabled={connecting || !connectEmail.trim()}
+                                            className="flex-1 py-3.5 rounded-2xl bg-brand-green text-white text-xs font-black uppercase tracking-widest hover:bg-brand-green/90 transition shadow-lg shadow-brand-green/20 disabled:opacity-50">
+                                            {connecting ? 'Connecting...' : 'Connect'}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    )}
                 </aside>
 
                 {/* Main Chat Area */}

@@ -159,9 +159,9 @@ export default function Browse() {
                     <aside className="hidden lg:flex flex-col gap-10 sticky top-32">
                         {/* Search Input */}
                         <div className="space-y-4">
-                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-teal/40">Search Neighbourhood</label>
+                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-teal/60 dark:text-brand-aqua/80">Search Neighbourhood</label>
                             <div className="relative group">
-                                <Search size={18} className="absolute left-6 top-1/2 -translate-y-1/2 text-brand-teal group-focus-within:text-brand-dark transition-colors" />
+                                <Search size={18} className="absolute left-6 top-1/2 -translate-y-1/2 text-brand-teal group-focus-within:text-brand-dark dark:group-focus-within:text-brand-frost transition-colors" />
                                 <input
                                     type="text"
                                     placeholder="Search gear..."
@@ -174,7 +174,7 @@ export default function Browse() {
 
                         {/* Category List */}
                         <div className="space-y-6">
-                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-teal/40">Category Catalog</label>
+                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-teal/60 dark:text-brand-aqua/80">Category Catalog</label>
                             <div className="flex flex-col gap-2">
                                 {['All', ...CATEGORIES].map(cat => (
                                     <button
@@ -182,7 +182,7 @@ export default function Browse() {
                                         onClick={() => setCategory(cat)}
                                         className={`flex items-center justify-between px-6 py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.1em] transition-all group ${category === cat
                                             ? 'bg-brand-dark text-brand-frost dark:bg-brand-green dark:text-brand-dark shadow-2xl scale-[1.02]'
-                                            : 'text-brand-teal/60 hover:bg-brand-teal/5'
+                                            : 'text-brand-dark/60 dark:text-brand-frost/70 hover:bg-brand-teal/5 dark:hover:bg-white/5'
                                             }`}
                                     >
                                         {cat}
@@ -194,7 +194,7 @@ export default function Browse() {
                         {/* Radius Slider */}
                         <div className="space-y-4 glass-card !p-6 !rounded-3xl">
                             <div className="flex justify-between items-center">
-                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-teal/60">Search Radius</label>
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-teal/60 dark:text-brand-aqua/80">Search Radius</label>
                                 <span className="text-xs font-black text-brand-dark dark:text-brand-frost">
                                     {radiusKm >= 6000 ? 'All India' : `${radiusKm.toLocaleString()} km`}
                                 </span>
